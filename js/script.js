@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   forms.forEach(item => {
-    binPostData(item);
+    bindPostData(item);
   });
 
   const postData = async (url, data) => {
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
     
 
-  function binPostData(form) {
+  function bindPostData(form) {
     form.addEventListener('submit', (event) => {
       event.preventDefault();
 
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       postData('http://localhost:3000/requests', json)
       .then(data => {
-        console.log(data);
+        // console.log(data);
         showThanksModal(message.success);
         statusMessage.remove();
       })
@@ -302,5 +302,55 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }, 4000);
   }
+
+  // Slider
+
+  const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        total = document.querySelector('#total'),
+        current = document.querySelector('#current');
+
+  let slideIndex = 1;
+
+  function slideShow(n) {
+
+    if ( n > slides.length) {
+      slideIndex = 1;
+    }
+
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+    
+    slides.forEach(slide => slide.style.display = 'none');
+      slides[slideIndex - 1].style.display = 'block';
+
+      if (slides.length < 10) {
+        current.textContent = `0${slideIndex}`;
+      } else {
+        current.textContent = slideIndex;
+      }
+  }
+
+  slideShow(slideIndex);
+    
+  if (slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+  } else {
+    total.textContent = slides.length;
+  }
+
+  function slidesPlus(n) {
+    slideShow(slideIndex += n);
+  }
+
+  prev.addEventListener('click', () => {
+    slidesPlus(-1);
+  });
+
+  next.addEventListener('click', () => {
+    slidesPlus(+1);
+  });  
 
 });
