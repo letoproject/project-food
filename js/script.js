@@ -167,12 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
       
       element.innerHTML = `
         <img src=${this.src} alt=${this.alt}>
-        <h3 class="menu__item-subtitle">${this.title}</h3>
-        <div class="menu__item-descr">${this.descr}</div>
-        <div class="menu__item-divider"></div>
-        <div class="menu__item-price">
-            <div class="menu__item-cost">Цена:</div>
-            <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+        <h3 class='menu__item-subtitle'>${this.title}</h3>
+        <div class='menu__item-descr'>${this.descr}</div>
+        <div class='menu__item-divider'></div>
+        <div class='menu__item-price'>
+            <div class='menu__item-cost'>Цена:</div>
+            <div class='menu__item-total'><span>${this.price}</span> грн/день</div>
         </div>
       `;
       this.parent.append(element);
@@ -211,12 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //       element.innerHTML = `
     //         <img src=${img} alt=${altimg}>
-    //         <h3 class="menu__item-subtitle">${title}</h3>
-    //         <div class="menu__item-descr">${descr}</div>
-    //         <div class="menu__item-divider"></div>
-    //         <div class="menu__item-price">
-    //             <div class="menu__item-cost">Цена:</div>
-    //             <div class="menu__item-total"><span>${priceUah}</span> грн/день</div>
+    //         <h3 class='menu__item-subtitle'>${title}</h3>
+    //         <div class='menu__item-descr'>${descr}</div>
+    //         <div class='menu__item-divider'></div>
+    //         <div class='menu__item-price'>
+    //             <div class='menu__item-cost'>Цена:</div>
+    //             <div class='menu__item-total'><span>${priceUah}</span> грн/день</div>
     //         </div>
     //       `;
 
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const postData = async (url, data) => {
     const res = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
         'Content-type': 'application/json'
       },
@@ -288,9 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const thanksModal = document.createElement('div');
     thanksModal.classList.add('modal__dialog');
     thanksModal.innerHTML = `
-      <div class="modal__content">
-        <div class="modal__close" data-close>×</div>
-        <div class="modal__title">${message}</div>
+      <div class='modal__content'>
+        <div class='modal__close' data-close>×</div>
+        <div class='modal__title'>${message}</div>
       </div>
     `;
 
@@ -490,4 +490,74 @@ document.addEventListener('DOMContentLoaded', () => {
   //   slidesPlus(+1);
   // });  
 
+
+  // Calc
+
+  const result = document.querySelector('.calculating__result span');
+  let sex = ' female',
+      height, weight, age, 
+      ratio = 1.375;
+
+  function calcTotal() {
+    if (!sex || !height || !weight || !age || !ratio) {
+      result.textContent = '____';
+      return;
+    }
+
+    if (sex === 'female') {
+      result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio);
+    } else {
+      result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio);
+    }
+  }
+
+  calcTotal();
+
+  function getStaticInformation(parentSelector, activeClass) {
+    const elements = document.querySelectorAll(`${parentSelector} div`);
+
+      elements.forEach(elem => {
+        elem.addEventListener('click', (event) => {
+        if (event.target.getAttribute('data-ratio')) {
+          ratio = event.target.getAttribute('data-ratio');
+        } else {
+          sex = event.target.getAttribute('id');
+        }
+
+        elements.forEach(elem => {
+          elem.classList.remove(activeClass);
+        });
+        event.target.classList.add(activeClass);
+
+        calcTotal();
+      });
+    });
+  }
+
+  getStaticInformation('#gender', 'calculating__choose-item_active');
+  getStaticInformation('.calculating__choose_big', 'calculating__choose-item_active');
+
+  function getDynamicInformation(selector) {
+    const input = document.querySelector(selector);
+
+    input.addEventListener('input', () => {
+      switch(input.getAttribute('id')) {
+        case 'height':
+          height = +input.value;
+          break;
+        case 'weight':
+          weight = +input.value;
+          break;
+        case 'age':
+          age = +input.value;
+          break;
+      }
+
+      calcTotal();
+    });
+  }
+
+  getDynamicInformation('#height');
+  getDynamicInformation('#weight');
+  getDynamicInformation('#age');
 });
